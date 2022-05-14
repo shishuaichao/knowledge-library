@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>事件代理</title>
+</head>
+<body>
+  <ul id="ul">
+    <li>第一个</li>
+    <li>第二个</li>
+  </ul>
+</body>
+<style>
+  #ul {
+    height: 300px;
+    background-color: aqua;
+  }
+  li {
+    height: 100px;
+    background-color: blueviolet;
+  }
+</style>
+<script src="../A-modules/jquery.slim.min.js"></script>
+<script>
+  // 原理
+  // e.target 指向触发冒泡的实际元素（通常来说是自己或者自己的子元素）
+
+  // e.currentTarget 指向事件绑定的元素（只能是标签自身）
+
+  // 这里ul绑定的事件，
+  // 点击li时，e.target是li, e.currentTarget是ul
+  // 点击ul时，e.target是ul, e.currentTarget是ul
+
+  // 代理原理
+  /*
+    当一个父元素有多个子元素需要添加同一类事件的时候，可以不一一在子元素上添加，而是在父元素上添加一个
+    然后通过判断  e.target !== e.currentTarget  来判断出点击的是子元素，来对子元素进行事件处理
+  */
+
+  function hide(e) {
+    console.log('e', e.target, e.currentTarget);
+    if (e.target !== e.currentTarget) {
+      console.log('子元素li')
+      $(e.target).text('我被代理了')
+    }
+  }
+
+  $('#ul').on('click', hide)
+</script>
+</html>
