@@ -3,3 +3,4 @@
 
 > list 
 - target-currenTarget-事件代理
+- invok-once
