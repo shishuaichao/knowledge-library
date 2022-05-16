@@ -2,6 +2,6 @@
 一些常用的知识点、用法、写法记录，以备后面查询
 
 > list 
-- [target-currenTarget-事件代理](https://github.com/shishuaichao/knowledge-library/commit/d2d1057a61bd72c9aa3919622d3effaf20255385)
-- [invok-once](https://github.com/shishuaichao/knowledge-library/commit/15d5f9188aca1d22cbaf3667e3c9736cb356a538)
+- [target-currenTarget-事件代理](./target-currenTarget-%E4%BA%8B%E4%BB%B6%E4%BB%A3%E7%90%86/index.html)
+- [invok-once](./invok-once/once.js)
 - [正则库](./%E6%AD%A3%E5%88%99%E5%BA%93/readme.md)
