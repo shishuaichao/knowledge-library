@@ -1,0 +1,72 @@
+#app {
+  position: absolute;
+  left: 50%;
+  margin-top: 100px;
+  transform: translateX(-50%);
+  padding: 10px;
+}          
+.wrapper {
+  height: 300px;
+  width: 380px; 
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+.wrapper.t-head {
+  height: 51px;
+}
+.cont {
+  width: 100%;
+  position: static;
+}
+.cont .left {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.cont .right {
+  width: 100%;
+  z-index: 0;
+  position: relative;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+.right .content {
+  width: 100%;
+}
+.right li {
+  display: flex;
+  flex-shrink: 0;
+  /* 此处宽可根据具体标签宽度来定 */
+  width: 900px;
+}
+.item {
+  line-height: 50px;
+  height: 50px;
+  width: 100px;
+  background-color: rgb(194, 148, 132);
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+.fixed {
+  z-index: 1;
+}
+.fixed .item {
+  background-color: aquamarine;
+}
+.t-head .left .item {
+  background-color: brown;
+}
+.t-head .right .item {
+  background-color: bisque;
+}
+
+.wrapper,
+.right {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.wrapper::-webkit-scrollbar,
+.right::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
