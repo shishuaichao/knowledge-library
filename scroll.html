@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link rel="stylesheet" href="./scroll.css">
+
+<body>
+    <h3 style="color: #f00; font-weight: bold;">TIPS: 请用手机看！！！记得引入vuejs</h3>
+    <div id="app">
+      <!-- 纵向滚动盒子 t-head -->
+      <div class="wrapper t-head">
+        <!-- 纵向滚动内容区域 -->
+        <div class="cont">
+          <!-- 第一列固定（相对于盒子绝对定位） -->
+          <div class="left fixed">
+            <div class="item">姓名</div>
+          </div>
+          <!-- 横向滚动盒子 -->
+          <div class="right" ref="headCont">
+            <!-- 横向滚动内容区域 -->
+            <div class="content">
+              <li>
+                <div class="item">性别</div>
+                <div class="item">年龄</div>
+                <div class="item">身高</div>
+                <div class="item">胸围</div>
+                <div class="item">腰围</div>
+                <div class="item">臀围</div>
+                <div class="item">体重</div>
+                <div class="item">发色</div>
+                <div class="item">是否会js</div>
+              </li>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 纵向滚动盒子 t-body -->
+      <div class="wrapper t-body" ref="verticalCont">
+        <!-- 纵向滚动内容区域 -->
+        <div class="cont">
+          <!-- 第一列固定（相对于盒子绝对定位） -->
+          <div class="left fixed">
+            <div class="item" v-for="(item, key) in list" :key="key">{{item.name}}</div>
+          </div>
+          <!-- 横向滚动盒子 -->
+          <div class="right" ref="bodyCont">
+            <!-- 横向滚动内容区域 -->
+            <div class="content">
+              <li v-for="(item, key) in list" :key="key">
+                <div class="item">{{item.gender}}</div>
+                <div class="item">{{item.age}}</div>
+                <div class="item">{{item.height}}</div>
+                <div class="item">{{item.xw}}</div>
+                <div class="item">{{item.yw}}</div>
+                <div class="item">{{item.tw}}</div>
+                <div class="item">{{item.weight}}</div>
+                <div class="item">{{item.hair}}</div>
+                <div class="item">{{item.js}}</div>
+              </li>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>hscrollLeft: {{hscrollLeft}}</div>
+      <div>hscrollWidth: {{hscrollWidth}}</div>
+      <div>hoffsetWidth: {{hoffsetWidth}}</div>
+      <div v-if="isEnd && isLoading">---到底了---</div>
+    </div>
+</body>
+<script src="./vue.js"></script>
+<script>
+    // 
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            list: [
+              { name: '张大', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '李二', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '张三', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '李四', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '王五', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '赵六', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '樊七', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '王八', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '老九', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '阿十', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '十一', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '十二', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '十三', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '十四', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+            ],
+            hscrollLeft: 0,
+            hscrollWidth: 0,
+            hoffsetWidth: 0,
+            bscrollLeft: 0,
+            bscrollWidth: 0,
+            boffsetWidth: 0,
+
+            isLoading: false,
+            isEnd: false,
+            offset: 50,  // 滚动到底判断位置
+        },
+        created() {
+
+        },
+        mounted() {
+          
+          let headCont = this.$refs.headCont;
+          let bodyCont = this.$refs.bodyCont;
+          console.log('xxx', headCont)
+          headCont.addEventListener('scroll', (e) => {
+            let t = e.target
+            this.hscrollLeft = t.scrollLeft;
+            bodyCont.scrollLeft = t.scrollLeft;
+            this.hscrollWidth = t.scrollWidth;
+            this.hoffsetWidth = t.offsetWidth;
+            // console.info(t.scrollLeft, t.scrollWidth, t.offsetWidth)
+          })
+          bodyCont.addEventListener('scroll', (e) => {
+            let t = e.target
+            headCont.scrollLeft = t.scrollLeft;
+            // console.info(t.scrollLeft, t.scrollWidth, t.offsetWidth)
+            // 横向
+            if ((t.scrollWidth - t.offsetWidth) - t.scrollLeft < this.offset) {
+              this.theEnd()
+            }
+          })
+
+          let verticalCont = this.$refs.verticalCont
+          
+          verticalCont.addEventListener('scroll', (e) => {
+            console.log('vertical', e)
+            let t = e.target
+            if ((t.scrollHeight - t.offsetHeight) - t.scrollTop < this.offset) {
+              this.theEnd()
+            }
+          })
+          
+          
+          
+          
+        },
+        methods: {
+          theEnd() {
+            // 简单防抖
+            if (this.isLoading) return
+            this.isLoading = true;
+            this.isEnd = true;
+            setTimeout(() => {
+              this.isLoading = false;
+            }, 1000);
+          }
+        }
+    })
+</script>
+
+</html>
