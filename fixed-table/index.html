@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<link rel="stylesheet" href="./scroll.css">
+<link rel="stylesheet" href="./index.css">
 
 <body>
     <h3 style="color: #f00; font-weight: bold;">TIPS: 请用手机看！！！记得引入vuejs</h3>
@@ -39,34 +39,40 @@
           </div>
         </div>
       </div>
-      <!-- 纵向滚动盒子 t-body -->
-      <div class="wrapper t-body" ref="verticalCont">
-        <!-- 纵向滚动内容区域 -->
-        <div class="cont">
-          <!-- 第一列固定（相对于盒子绝对定位） -->
-          <div class="left fixed">
-            <div class="item" v-for="(item, key) in list" :key="key">{{item.name}}</div>
-          </div>
-          <!-- 横向滚动盒子 -->
-          <div class="right" ref="bodyCont">
-            <!-- 横向滚动内容区域 -->
-            <div class="content">
-              <li v-for="(item, key) in list" :key="key">
-                <div class="item">{{item.gender}}</div>
-                <div class="item">{{item.age}}</div>
-                <div class="item">{{item.height}}</div>
-                <div class="item">{{item.xw}}</div>
-                <div class="item">{{item.yw}}</div>
-                <div class="item">{{item.tw}}</div>
-                <div class="item">{{item.weight}}</div>
-                <div class="item">{{item.hair}}</div>
-                <div class="item">{{item.js}}</div>
-              </li>
+      <!-- 给菜单定位用的盒子 -->
+      <div class="vertical-wrapper-box">
+        <!-- 纵向滚动盒子 t-body -->
+        <div class="wrapper t-body" ref="verticalCont">
+          <!-- 纵向滚动内容区域 -->
+          <div class="cont">
+            <!-- 第一列固定（相对于盒子绝对定位） -->
+            <div class="left fixed">
+              <div class="item" v-for="(item, key) in list" :key="key" :class="{'active': activeIndex === key}">{{item.name}}</div>
+            </div>
+            <!-- 横向滚动盒子 -->
+            <div class="right" ref="bodyCont">
+              <!-- 横向滚动内容区域 -->
+              <div class="content">
+                <li v-for="(item, key) in list" :key="key" :class="{'active': activeIndex === key}" @touchStart="touchStart(item, key)" @touchEnd="touchEnd" @touchMove="touchMove">
+                  <div class="item">{{item.gender}}</div>
+                  <div class="item">{{item.age}}</div>
+                  <div class="item">{{item.height}}</div>
+                  <div class="item">{{item.xw}}</div>
+                  <div class="item">{{item.yw}}</div>
+                  <div class="item">{{item.tw}}</div>
+                  <div class="item">{{item.weight}}</div>
+                  <div class="item">{{item.hair}}</div>
+                  <div class="item">{{item.js}}</div>
+                </li>
+              </div>
             </div>
           </div>
         </div>
+        <!-- menu -->
+        <div v-if="showMenu" class="menu" @click="menuClick" :style="{'top': `${menuTop}px`}">
+          点击删除
+        </div>
       </div>
-
       <div>hscrollLeft: {{hscrollLeft}}</div>
       <div>hscrollWidth: {{hscrollWidth}}</div>
       <div>hoffsetWidth: {{hoffsetWidth}}</div>
@@ -81,20 +87,20 @@
         el: '#app',
         data: {
             list: [
-              { name: '张大', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '李二', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '张三', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '李四', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '王五', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '赵六', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '樊七', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '王八', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '老九', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '阿十', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '十一', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '十二', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '十三', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
-              { name: '十四', gender: 'woman', age: 18, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '张大', gender: 'woman', age: 21, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '李二', gender: 'woman', age: 22, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '张三', gender: 'woman', age: 23, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '李四', gender: 'woman', age: 24, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '王五', gender: 'woman', age: 25, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '赵六', gender: 'woman', age: 26, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '樊七', gender: 'woman', age: 27, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '王八', gender: 'woman', age: 28, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '老九', gender: 'woman', age: 29, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '阿十', gender: 'woman', age: 30, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '十一', gender: 'woman', age: 31, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '十二', gender: 'woman', age: 32, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '十三', gender: 'woman', age: 33, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
+              { name: '十四', gender: 'woman', age: 34, height: 160, xw: 80, yw: 40, tw: 75, weight: 80, hair: 'black', js: false },
             ],
             hscrollLeft: 0,
             hscrollWidth: 0,
@@ -105,17 +111,26 @@
 
             isLoading: false,
             isEnd: false,
+            scrollTop: 0,
             offset: 50,  // 滚动到底判断位置
+
+
+            startTime: null, 
+            longTouchTimer: null,
+            longTouchInterval: 500,
+            showMenu: false,
+            menuTop: null,  // menu距离上方高度
+            activeIndex: null,  // 长按位置
         },
         created() {
 
         },
         mounted() {
-          
           let headCont = this.$refs.headCont;
           let bodyCont = this.$refs.bodyCont;
           console.log('xxx', headCont)
           headCont.addEventListener('scroll', (e) => {
+            this.hideMenuEvent()
             let t = e.target
             this.hscrollLeft = t.scrollLeft;
             bodyCont.scrollLeft = t.scrollLeft;
@@ -124,6 +139,7 @@
             // console.info(t.scrollLeft, t.scrollWidth, t.offsetWidth)
           })
           bodyCont.addEventListener('scroll', (e) => {
+            this.hideMenuEvent()
             let t = e.target
             headCont.scrollLeft = t.scrollLeft;
             // console.info(t.scrollLeft, t.scrollWidth, t.offsetWidth)
@@ -134,18 +150,15 @@
           })
 
           let verticalCont = this.$refs.verticalCont
-          
           verticalCont.addEventListener('scroll', (e) => {
-            console.log('vertical', e)
+            this.hideMenuEvent()
             let t = e.target
+            console.log('vertical', t.scrollTop)
+            this.scrollTop = t.scrollTop
             if ((t.scrollHeight - t.offsetHeight) - t.scrollTop < this.offset) {
               this.theEnd()
             }
           })
-          
-          
-          
-          
         },
         methods: {
           theEnd() {
@@ -156,7 +169,46 @@
             setTimeout(() => {
               this.isLoading = false;
             }, 1000);
-          }
+          },
+
+          touchStart(item, index) {
+            this.hideMenuEvent()
+            // console.log('touchStart', e)
+            this.startTime = Date.parse(new Date())
+            this.inVokeLongTouch(item, index)
+          },
+          touchEnd(e) {
+            // console.log('touchEnd', e)
+            let now = Date.parse(new Date())
+            if (now - this.startTime < this.longTouchInterval) {
+              clearTimeout(this.longTouchTimer)
+            }
+          },
+          touchMove(e) {
+            this.hideMenuEvent()
+            // console.log('touchMove', e)
+            clearTimeout(this.longTouchTimer)
+          },
+
+          inVokeLongTouch(item, index) {
+            this.longTouchTimer = setTimeout(() => {
+              this.activeIndex = index
+              this.menuTop = (this.activeIndex - 1)*51 - this.scrollTop
+              this.showMenu = true
+              console.log('长按了', item, this.activeIndex, this.menuTop)
+            }, this.longTouchInterval);
+          },
+
+          menuClick() {
+            this.list.splice(this.activeIndex, 1)
+            this.hideMenuEvent()
+            console.log('菜单被点击了')
+            
+          },
+          hideMenuEvent() {
+            this.showMenu = false;
+            this.activeIndex = null;
+          },
         }
     })
 </script>
