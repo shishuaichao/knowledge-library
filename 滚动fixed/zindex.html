@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      .box {
+        border: 1px solid #ccc;
+      }
+      .item {
+        /* border: 1px solid #999; */
+        border-bottom: none;
+      }
+      .title {
+        line-height: 60px;
+        background-color: #e0e0e0;
+        border-top: 1px solid #f00;
+      }
+      .cont {
+        height: 600px;
+        background-color: #f8f8f8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="item">
+        <div class="title">标题1</div>
+        <div class="cont">内容1</div>
+      </div>
+      <div class="item">
+        <div class="title">标题2</div>
+        <div class="cont">内容2</div>
+      </div>
+      <div class="item">
+        <div class="title">标题3</div>
+        <div class="cont">内容3</div>
+      </div>
+      <div class="item">
+        <div class="title">标题4</div>
+        <div class="cont">内容4</div>
+      </div>
+      <div class="item">
+        <div class="title">标题5</div>
+        <div class="cont">内容5</div>
+      </div>
+      <div class="item">
+        <div class="title">标题6</div>
+        <div class="cont">内容6</div>
+      </div>
+    </div>
+  </body>
+  <script src="./jquery1.9.0.min.js"></script>
+  <script src="./jquery-scrolltofixed-min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var summaries = $('.title')
+      summaries.each(function (i) {
+        var summary = $(summaries[i])
+        var next = summaries[i + 1]
+        summary.scrollToFixed({
+          marginTop: 0,
+          limit: function () {
+            return $(next).offset().top - $(this).outerHeight(true)
+          },
+          zIndex: 999,
+        })
+      })
+    })
+  </script>
+</html>
