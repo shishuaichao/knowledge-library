@@ -164,13 +164,26 @@
             let targetIndex = findCurrentIndex(e.target)
 
             if(currentIndex < targetIndex){
-                list.insertBefore(currNode, e.target.nextElementSibling)
+                // 从前往后移
+                let el = e.target
+                targetNodePosition = getPosition(el, 'target移动前')
+                el.style.transition = 'all 0.1s linear'
+                el.style.left = currNodePosition.x - targetNodePosition.x + 'px'
+                el.style.top = currNodePosition.y - targetNodePosition.y + 'px'
+                el.ontransitionend = () => {
+                  list.insertBefore(currNode, el.nextElementSibling)
+                  el.style.transition = ''
+                  el.style.left = 0
+                  getPosition(el, 'target移动后')
+                  currNodePosition = targetNodePosition
+                }
             }else{
               // 从后往前移
               let el = e.target
               targetNodePosition = getPosition(el, 'target移动前')
-              el.style.transition = 'all 0.1s linear'
+              el.style.transition = 'all 0.2s linear'
               el.style.left = currNodePosition.x - targetNodePosition.x + 'px'
+              
               el.ontransitionend = () => {
                 list.insertBefore(currNode, el)
                 el.style.transition = ''
