@@ -14,21 +14,18 @@
         }
         .cont {
           margin: 200px auto;
-          width: 500px;
+          width: 460px;
         }
         ul{
+            width: 100%;
+            box-sizing: content-box;
             list-style-type: none;
-            
-            /* height: 400px; */
             border: 1px solid #eee;
             display: flex;
-            /* justify-content: space-between; */
             flex-wrap: wrap;
             align-content: start;
+            padding-bottom: 20px;
         }
-        /* ul li:nth-child(4n + 1) {
-          margin-left: 0;
-        } */
         
         li.fade_out {
           width: 0;
@@ -66,9 +63,10 @@
             /* transform: translatex; */
         }
         li{
+            border-radius: 6px;
             margin-left: 20px;
             width: 90px;
-            margin-bottom: 10px;
+            margin-top: 20px;
             text-align: center;
             height: 40px;
             line-height: 40px;
@@ -79,7 +77,7 @@
             top: 0;
             right: 0;
             bottom: 0;
-            /* transition: left 1s linear; */
+            cursor: grab;
         }
         </style>
 </head>
@@ -94,14 +92,14 @@
     <script>
         var dataList = ['娱乐', '视频', '头条', '健康', '科技', '发现', '热点', '财经', '短剧', '手机']
         const ulDom = document.querySelector('.list')
-        dataList.forEach(e => {
+        dataList.forEach((e, i) => {
           let li = document.createElement('li')
           // let span = document.createElement('span')
           // span.textContent = 'x'
           li.setAttribute('data-name', e)
           li.setAttribute('draggable', true)
           li.className = 'item'
-          li.textContent = e
+          li.textContent = e + (i + 1)
           // li.appendChild(span)
           ulDom.appendChild(li)
         })
@@ -136,7 +134,7 @@
         }
         const getPosition = (element, type) => {
           const rect = element.getBoundingClientRect(); 
-          console.log(type, rect)
+          // console.log(type, rect)
           return rect
         }
 
@@ -156,6 +154,7 @@
         })
 
         list.addEventListener('dragenter',(e)=>{
+          console.log('进入移动元素', e.target)
           e.preventDefault()
             if(e.target === currNode||e.target === list){
                 return
@@ -165,23 +164,43 @@
 
             if(currentIndex < targetIndex){
               // 从前往后移
-              fromA2B(currNode, e.target, true)
+              fromA2B(currNode, e.target, true, currentIndex, targetIndex)
             }else{
               // 从后往前移
-              fromA2B(currNode, e.target)
+              fromA2B(currNode, e.target, false, currentIndex, targetIndex)
             }
         })
-
-        const fromA2B = (currEl, targetEl, isAfter = false) => {
+        
+        
+        const fromA2B = (currEl, targetEl, isAfter = false, currentIndex, targetIndex) => {
+          console.log('跨列', currentIndex, targetIndex)
+          if (Math.abs(currentIndex - targetIndex) > 1) {
+            if (!isAfter) {
+              // 从后往前移 
+              // 6 -> 3 为例  
+              // currentIndex == 6 
+              // targetIndex == 3
+              // 3/4/5 往后移
+              let arr = Array.from(list.childNodes)
+              for (let i = currentIndex - 1; i >= targetIndex; i--) {
+                setTimeout(() => {
+                  fromA2B(arr[i], arr[i + 1], isAfter, i, i + 1)
+                }, 10);
+              }
+            }
+            return
+          }
           targetNodePosition = getPosition(targetEl, 'target移动前')
           targetEl.style.transition = 'all 0.2s linear'
           targetEl.style.left = currNodePosition.x - targetNodePosition.x + 'px'
+          targetEl.style.top = currNodePosition.y - targetNodePosition.y + 'px'
           targetEl.ontransitionend = () => {
             list.insertBefore(currEl, isAfter ? targetEl.nextElementSibling : targetEl)
             targetEl.style.transition = ''
             targetEl.style.left = 0
+            targetEl.style.top = 0
             getPosition(targetEl, 'target移动后')
-            currNodePosition = targetNodePosition
+            currNodePosition = targetNodePosition   // 更新拖动元素位置
           }
         }
 
