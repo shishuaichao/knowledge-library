@@ -89,6 +89,7 @@
       </div>
       <ul class="list"></ul>
     </div>
+    <script src="./sortable.js"></script>
     <script>
         var dataList = ['娱乐', '视频', '头条', '健康', '科技', '发现', '热点', '财经', '短剧', '手机']
         const ulDom = document.querySelector('.list')
@@ -118,6 +119,7 @@
           })
         }
         edit()
+        
 
         function editDone() {
           let spans = document.querySelectorAll('span')
@@ -154,7 +156,7 @@
         })
 
         list.addEventListener('dragenter',(e)=>{
-          console.log('进入移动元素', e.target)
+          // console.log('进入移动元素', e.target)
           e.preventDefault()
             if(e.target === currNode||e.target === list){
                 return
@@ -171,37 +173,50 @@
             }
         })
         
-        
-        const fromA2B = (currEl, targetEl, isAfter = false, currentIndex, targetIndex) => {
-          console.log('跨列', currentIndex, targetIndex)
-          if (Math.abs(currentIndex - targetIndex) > 1) {
-            if (!isAfter) {
-              // 从后往前移 
-              // 6 -> 3 为例  
-              // currentIndex == 6 
-              // targetIndex == 3
-              // 3/4/5 往后移
-              let arr = Array.from(list.childNodes)
-              for (let i = currentIndex - 1; i >= targetIndex; i--) {
-                setTimeout(() => {
-                  fromA2B(arr[i], arr[i + 1], isAfter, i, i + 1)
-                }, 10);
-              }
-            }
-            return
-          }
-          targetNodePosition = getPosition(targetEl, 'target移动前')
-          targetEl.style.transition = 'all 0.2s linear'
-          targetEl.style.left = currNodePosition.x - targetNodePosition.x + 'px'
-          targetEl.style.top = currNodePosition.y - targetNodePosition.y + 'px'
-          targetEl.ontransitionend = () => {
-            list.insertBefore(currEl, isAfter ? targetEl.nextElementSibling : targetEl)
-            targetEl.style.transition = ''
-            targetEl.style.left = 0
-            targetEl.style.top = 0
-            getPosition(targetEl, 'target移动后')
-            currNodePosition = targetNodePosition   // 更新拖动元素位置
-          }
+        const fromA2B = (currEl, target, isAfter = false, currentIndex, targetIndex) => {
+          let currRect = getPosition(currEl)
+          let toRect = getPosition(target)
+          
+          css(target, 'transition', '');
+          css(target, 'transform', '');
+          let translateX = currRect.left - toRect.left
+          let translateY = currRect.top - toRect.top
+          target.animatingX = !!translateX
+          target.animatingY = !!translateY
+          console.log('平移', translateX, translateY)
+          css(target, 'transform', 'translate3d(' + translateX + 'px,' + translateY + 'px, 0)');
+          this.forRepaintDummy = target.offsetTop; // repaint
+
+          css(target, 'transition', 'transform ' + duration + 'ms' + '');
+          css(target, 'transform', 'translate3d(0,0,0)');
+
+          typeof target.animated === 'number' && clearTimeout(target.animated);
+          target.animated = setTimeout(function () {
+            css(target, 'transition', '');
+            css(target, 'transform', '');
+            target.animated = false;
+            target.animatingX = false;
+            target.animatingY = false;
+          }, duration);
+
+          list.insertBefore(currEl, isAfter ? target.nextElementSibling : target)
+        }
+
+        function keySteps1() {
+          // 关键步骤
+          css(target, 'transform', 'translate3d(' + translateX + 'px,' + translateY + 'px,0)');
+          this.forRepaintDummy = target.offsetTop; // repaint
+
+          css(target, 'transition', 'transform ' + duration + 'ms' + (this.options.easing ? ' ' + this.options.easing : ''));
+          css(target, 'transform', 'translate3d(0,0,0)');
+          typeof target.animated === 'number' && clearTimeout(target.animated);
+          target.animated = setTimeout(function () {
+            css(target, 'transition', '');
+            css(target, 'transform', '');
+            target.animated = false;
+            target.animatingX = false;
+            target.animatingY = false;
+          }, duration);
         }
 
         list.addEventListener('dragover',(e)=>{
