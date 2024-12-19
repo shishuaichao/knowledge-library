@@ -1,22 +1,18 @@
-class Greeter {
-  static standardGreeting = "Hello, there";
-  greeting: string;
-  greet() {
-      if (this.greeting) {
-          return "Hello, " + this.greeting;
-      }
-      else {
-          return Greeter.standardGreeting;
-      }
-  }
+
+interface People {
+    name: string
+    id: number
 }
 
-let greeter1: Greeter;
-greeter1 = new Greeter();
-console.log(greeter1.greet());
+interface Dog {
+    bark: number
+    hand: string
+}
 
-let greeterMaker: typeof Greeter = Greeter;
-greeterMaker.standardGreeting = "Hey there!";
+type Animal = People | Dog
 
-let greeter2: Greeter = new greeterMaker();
-console.log(greeter2.greet());
+function foo(arg: Animal) {
+    console.log(`arg`, arg);
+}
+
+foo({ name: '12', bark: 12, id: 12})

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        .cont {
+          margin: 200px auto;
+          width: 500px;
+        }
+        ul{
+            list-style-type: none;
+            
+            /* height: 400px; */
+            border: 1px solid #eee;
+            display: flex;
+            /* justify-content: space-between; */
+            flex-wrap: wrap;
+            align-content: start;
+        }
+        /* ul li:nth-child(4n + 1) {
+          margin-left: 0;
+        } */
+        
+        li.fade_out {
+          width: 0;
+          background-color: transparent;
+          color: transparent;
+          margin: 0;
+        }
+        li.fade_out span {
+          width: 0;
+        }
+        li span {
+          position: absolute;
+          width: 16px;
+          height: 16px;
+          background-color: #bbb;
+          line-height: 14px;
+          font-size: 12px;
+          text-align: center;
+          top: -4px;
+          right: -4px;
+          z-index: 1;
+          border-radius: 50%;
+          color: #fff;
+          cursor: pointer;
+          display: none;
+          
+        }
+        .list .moving{
+            background: transparent;
+            color: transparent;
+        }
+        .list .moving span{
+            background: transparent;
+            color: transparent;
+            /* transform: translatex; */
+        }
+        li{
+            margin-left: 20px;
+            width: 90px;
+            margin-bottom: 10px;
+            text-align: center;
+            height: 40px;
+            line-height: 40px;
+            background: #eee;
+            color: #666;
+            position: relative;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            /* transition: left 1s linear; */
+        }
+        </style>
+</head>
+<body>
+    <div class="cont">
+      <div style="margin: 10px auto">
+        <button onclick="edit()">编辑</button>
+        <button onclick="editDone()">完成</button>
+      </div>
+      <ul class="list"></ul>
+    </div>
+    <script>
+        var dataList = ['娱乐', '视频', '头条', '健康', '科技', '发现', '热点', '财经', '短剧', '手机']
+        const ulDom = document.querySelector('.list')
+        dataList.forEach(e => {
+          let li = document.createElement('li')
+          // let span = document.createElement('span')
+          // span.textContent = 'x'
+          li.setAttribute('data-name', e)
+          li.setAttribute('draggable', true)
+          li.className = 'item'
+          li.textContent = e
+          // li.appendChild(span)
+          ulDom.appendChild(li)
+        })
+
+        function edit() {
+          let spans = document.querySelectorAll('span')
+          spans.forEach(e => {
+            e.style.display = 'block'
+            e.parentElement.setAttribute('draggable', true)
+            e.addEventListener('click', () => {
+              e.parentElement.classList.add('fade_out')
+              setTimeout(() => {
+                e.parentElement.remove()
+              }, 500);
+            })
+          })
+        }
+        edit()
+
+        function editDone() {
+          let spans = document.querySelectorAll('span')
+          spans.forEach(e => {
+            e.style.display = 'none'
+            e.parentElement.setAttribute('draggable', false)
+          })
+        }
+        
+        const findCurrentIndex = (node) => {
+          let parentNode = node.parentNode
+          let arr = Array.from(parentNode.childNodes)
+          return arr.indexOf(node)
+        }
+        const getPosition = (element, type) => {
+          const rect = element.getBoundingClientRect(); 
+          console.log(type, rect)
+          return rect
+        }
+
+
+
+        let list = document.querySelector('.list')
+        let currNode = null
+        let currNodePosition = null
+        let targetNodePosition = null
+        list.addEventListener('dragstart',(e)=>{
+            e.dataTransfer.effectAllowed = 'move'
+            currNode = e.target
+            currNodePosition = getPosition(currNode, 'drag元素')
+            setTimeout(()=>{
+                currNode.classList.add('moving')
+            })
+        })
+
+        list.addEventListener('dragenter',(e)=>{
+          e.preventDefault()
+            if(e.target === currNode||e.target === list){
+                return
+            }
+            let currentIndex = findCurrentIndex(currNode)
+            let targetIndex = findCurrentIndex(e.target)
+
+            if(currentIndex < targetIndex){
+                list.insertBefore(currNode, e.target.nextElementSibling)
+            }else{
+              // 从后往前移
+              let el = e.target
+              targetNodePosition = getPosition(el, 'target移动前')
+              el.style.transition = 'all 0.1s linear'
+              el.style.left = currNodePosition.x - targetNodePosition.x + 'px'
+              el.ontransitionend = () => {
+                list.insertBefore(currNode, el)
+                el.style.transition = ''
+                el.style.left = 0
+                getPosition(el, 'target移动后')
+                currNodePosition = targetNodePosition
+              }
+            }
+            
+        }, true)
+        list.addEventListener('dragover',(e)=>{
+            e.preventDefault()
+        })
+        list.addEventListener('dragend',(e)=>{
+            currNode.classList.remove('moving')
+        })
+    </script>
+</body>
+</html>
