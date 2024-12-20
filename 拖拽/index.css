@@ -12,7 +12,7 @@ ul {
   width: 100%;
   box-sizing: content-box;
   list-style-type: none;
-  border: 1px solid #eee;
+  /* border: 1px solid #eee; */
   display: flex;
   flex-wrap: wrap;
   align-content: start;
@@ -46,7 +46,7 @@ li span {
   display: none;
 }
 .list .moving {
-  background: skyblue;
+  background: lightblue;
   color: #fff;
   /* background: transparent;
   color: transparent; */
@@ -59,11 +59,11 @@ li span {
 li {
   border-radius: 6px;
   margin-left: 20px;
-  width: 90px;
+  width: 80px;
   margin-top: 20px;
   text-align: center;
-  height: 40px;
-  line-height: 40px;
+  height: 80px;
+  line-height: 80px;
   background: #eee;
   color: #666;
   position: relative;

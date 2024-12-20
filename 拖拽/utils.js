@@ -1,6 +1,6 @@
 
 
-
+// 设置标签css方法
 function css(el, prop, val) {
   var style = el && el.style;
   if (style) {
@@ -31,9 +31,29 @@ function clone(el) {
   return cloneEl
 }
 
-// 丢弃克隆节点
-function dropCloneNode(cloneEl) {
-  cloneEl.parentNode.removeChild(cloneEl);
+// 隐藏/丢弃克隆节点
+function hideClone(cloneEl, isDrop) {
+  if (isDrop) {
+    cloneEl && cloneEl.parentNode && cloneEl.parentNode.removeChild(cloneEl);
+    cloneEl.status = 'remove'
+    return 
+  }
+  css(cloneEl, 'display', 'none')
+  cloneEl.status = 'hide'
+}
+// 克隆节点
+function showClone(dragNode) {
+  if (!dragNodeClone || dragNodeClone.status == 'remove') {
+    dragNodeClone = clone(dragNode)
+    dragNodeClone.status = 'show'
+    dragNode && dragNode.parentNode.appendChild(dragNodeClone);
+    return 
+  }
+  // 更新clone标签位置
+  let rect = getRect(dragNode)
+  css(dragNodeClone, 'left', rect.left)
+  css(dragNodeClone, 'top', rect.top)
+  css(dragNodeClone, 'display', '')
 }
 
 // 获取标签索引
@@ -47,12 +67,72 @@ const findCurrentIndex = (node) => {
 const getRect = (element, str) => {
   const rect = element.getBoundingClientRect(); 
   const parentRect = element.parentNode.getBoundingClientRect();
-  str && console.log(str, rect);
-  str && console.log(str, 'parentRect', parentRect);
   let rectObj = {
     left: rect.left - parentRect.left,
     top: rect.top - parentRect.top,
   }
-  console.log('真实位置', rectObj)
+  // str && console.log(str, rectObj);
+  str == '打印' && console.log('真实位置', rectObj)
   return rectObj
+}
+
+// 获取位置
+const getPosition = (element, str) => {
+  const rect = element.getBoundingClientRect(); 
+  // str && console.log(str, rectObj);
+  return rect
+}
+
+// 关键动画
+const animate = (insertNode, target, duration) => {
+  if (rootDuration) {
+    duration = rootDuration
+  }
+  let insertRect = getRect(insertNode, '插入节点');
+  let targetRect = getRect(target, '目标节点');
+  css(target, "transition", "");
+  css(target, "transform", "");
+  let translateX = insertRect.left - targetRect.left;
+  let translateY = insertRect.top - targetRect.top;
+  target.animatingX = !!translateX;
+  target.animatingY = !!translateY;
+  // console.log("移动了", translateX, translateY);
+  css(
+    target,
+    "transform",
+    "translate3d(" + translateX + "px," + translateY + "px, 0)"
+  );
+
+  // 1. 先插入 2. 执行动画 3. 动画执行到translate3d，把动画元素回复到初始状态，
+  // 4. 然后重绘  this.forRepaintDummy = target.offsetTop; // 立即重绘 repaint
+  // 5. 然后执行transition过渡到本身位置（也就是插入后的位置）
+  
+  this.forRepaintDummy = target.offsetTop; // 立即重绘 repaint
+
+  css(target, "transition", "transform " + duration + "ms" + " linear");
+  css(target, "transform", "translate3d(0,0,0)");
+  
+  if (typeof target.isAnimate === "number") {
+    clearTimeout(target.isAnimate);
+    // console.log('停掉' + target.textContent + '的动画')
+  }
+  target.isAnimate = setTimeout(function () {
+    css(target, "transition", "");
+    css(target, "transform", "");
+    target.isAnimate = false;
+    target.animatingX = false;
+    target.animatingY = false;
+  }, duration);
+};
+
+// 节点互换
+const exChangeNode = (dragNode, target, isInsertBefore) => {
+  // 创建克隆节点，插入根节点
+  showClone(dragNode)
+  // 插入节点、执行动画
+  rootEl.insertBefore(dragNode, isInsertBefore ? target : target.nextElementSibling)
+  animate(dragNode, target);
+  animate(dragNodeClone, dragNode);
+  // 隐藏克隆标签
+  hideClone(dragNodeClone)
 }
