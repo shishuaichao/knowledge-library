@@ -84,16 +84,14 @@ const getPosition = (element, str) => {
 }
 
 // 关键动画
-const animate = (insertNode, target, duration) => {
+const animate = (target, currRect, toRect, duration) => {
   if (rootDuration) {
     duration = rootDuration
   }
-  let insertRect = getRect(insertNode, '插入节点');
-  let targetRect = getRect(target, '目标节点');
   css(target, "transition", "");
   css(target, "transform", "");
-  let translateX = insertRect.left - targetRect.left;
-  let translateY = insertRect.top - targetRect.top;
+  let translateX = currRect.left - toRect.left;
+  let translateY = currRect.top - toRect.top;
   target.animatingX = !!translateX;
   target.animatingY = !!translateY;
   // console.log("移动了", translateX, translateY);
@@ -131,8 +129,8 @@ const exChangeNode = (dragNode, target, isInsertBefore) => {
   showClone(dragNode)
   // 插入节点、执行动画
   rootEl.insertBefore(dragNode, isInsertBefore ? target : target.nextElementSibling)
-  animate(dragNode, target);
-  animate(dragNodeClone, dragNode);
+  animate(target, getRect(dragNode), getRect(target));
+  animate(dragNode, getRect(dragNodeClone), getRect(dragNode));
   // 隐藏克隆标签
   hideClone(dragNodeClone)
 }
