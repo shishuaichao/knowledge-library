@@ -1,8 +1,8 @@
 
 
 
-const dataList = ['娱乐', '视频', '头条', '健康', '科技', '发现', '热点', '财经', '短剧', '手机']
-var rootDuration = 250
+const dataList = ['娱乐', '视频', '头条', '健康', '科技', '发现', '热点', '财经', '短剧', '手机', '电影', '电脑']
+var rootDuration = 150
 
 // 1. 创建dom
 const rootEl = document.querySelector('.list')
