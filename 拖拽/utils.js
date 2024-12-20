@@ -83,7 +83,7 @@ const getPosition = (element, str) => {
   return rect
 }
 
-// 关键动画
+// 关键动画（把元素target 从 currRect位置，过渡到 toRect位置）
 const animate = (target, currRect, toRect, duration) => {
   if (rootDuration) {
     duration = rootDuration
