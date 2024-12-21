@@ -2,7 +2,7 @@
 
 
 const dataList = ['娱乐', '视频', '头条', '健康', '科技', '发现', '热点', '财经', '短剧', '手机', '电影', '电脑']
-var rootDuration = 150
+var rootDuration = 350
 
 // 1. 创建dom
 const rootEl = document.querySelector('.list')
@@ -10,12 +10,15 @@ dataList.forEach((e, i) => {
   let li = document.createElement('li')
   li.setAttribute('data-name', e)
   li.className = 'item'
-  li.textContent = e + (i + 1)
+  li.textContent = e
   rootEl.appendChild(li)
 })
 
 // 2. 添加监听事件
 let liArr = Array.from(rootEl.childNodes)
+function updateLiArr() {
+  liArr = Array.from(rootEl.childNodes)
+}
 let dragNode = null
 let dragNodeClone = null
 
@@ -30,23 +33,22 @@ liArr.forEach(li => {
   li.addEventListener("dragstart", e => {
     e.dataTransfer.effectAllowed = "move";
     dragNode = e.target
-    dragNode.setAttribute('id', 1)
     setTimeout(() => {
       dragNode.classList.add('moving')
     }, 1);
   })
   li.addEventListener("dragenter", e => {
     e.preventDefault();
-    if (e.target == dragNode || e.target.isAnimate || e.target.animatingX || e.target.animatingY) return
+    if (e.target == dragNode) return
     let dragNodeIndex = findCurrentIndex(dragNode);
     let targetIndex = findCurrentIndex(e.target);
     
     if (dragNodeIndex > targetIndex) {
       // 从后往前移
-      exChangeNode(dragNode, e.target, true)
+      exChangeNode(dragNode, e.target, true, dragNodeIndex, targetIndex)
     } else {
       // 从前往后移
-      exChangeNode(dragNode, e.target)
+      exChangeNode(dragNode, e.target, false, dragNodeIndex, targetIndex)
     }
   });
   li.addEventListener("dragover", (e) => {

@@ -6,7 +6,7 @@
 }
 .cont {
   margin: 200px auto;
-  width: 460px;
+  width: 360px;
 }
 ul {
   width: 100%;
@@ -59,11 +59,11 @@ li span {
 li {
   border-radius: 6px;
   margin-left: 20px;
-  width: 80px;
   margin-top: 20px;
   text-align: center;
-  height: 80px;
-  line-height: 80px;
+  width: 90px;
+  height: 40px;
+  line-height: 40px;
   background: #eee;
   color: #666;
   position: relative;

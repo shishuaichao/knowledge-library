@@ -71,8 +71,8 @@ const getRect = (element, str) => {
     left: rect.left - parentRect.left,
     top: rect.top - parentRect.top,
   }
-  // str && console.log(str, rectObj);
-  str == '打印' && console.log('真实位置', rectObj)
+  // str && console.log(element.textContent, str, rectObj);
+  // str == '打印' && console.log(element, '真实位置', rectObj)
   return rectObj
 }
 
@@ -84,6 +84,8 @@ const getPosition = (element, str) => {
 }
 
 // 关键动画（把元素target 从 currRect位置，过渡到 toRect位置）
+// 目前场景下，先插入元素再执行动画的前提下
+// 其实currRect是插入后的位置，toRect是元素插入前的位置
 const animate = (target, currRect, toRect, duration) => {
   if (rootDuration) {
     duration = rootDuration
@@ -124,13 +126,35 @@ const animate = (target, currRect, toRect, duration) => {
 };
 
 // 节点互换
-const exChangeNode = (dragNode, target, isInsertBefore) => {
+const exChangeNode = (dragNode, target, isInsertBefore, dragNodeIndex, targetIndex) => {
   // 创建克隆节点，插入根节点
   showClone(dragNode)
+  let rectList = []
+  if (dragNodeIndex > targetIndex) {
+    for (let i=targetIndex; i<=dragNodeIndex; i++) {
+      rectList.push({
+        el: liArr[i],
+        currRect: getRect(liArr[i], '插入前')
+      })
+    }
+  } else if (dragNodeIndex < targetIndex) {
+    for (let i=dragNodeIndex; i<=targetIndex; i++) {
+      rectList.push({
+        el: liArr[i],
+        currRect: getRect(liArr[i], '打印')
+      })
+    }
+  }
   // 插入节点、执行动画
   rootEl.insertBefore(dragNode, isInsertBefore ? target : target.nextElementSibling)
-  animate(target, getRect(dragNode), getRect(target));
-  animate(dragNode, getRect(dragNodeClone), getRect(dragNode));
+  // 更新节点数据
+  updateLiArr()
+
+  rectList.map(e => {
+    e.toRect = getRect(e.el, '插入后')
+    animate(e.el, e.currRect, e.toRect);
+  })
+  // animate(dragNode, getRect(dragNodeClone), getRect(dragNode));
   // 隐藏克隆标签
   hideClone(dragNodeClone)
 }
